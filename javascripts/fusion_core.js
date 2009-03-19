@@ -195,7 +195,7 @@ JazzFusion.controllers = new JazzFusion.Hash();
 // This is an adapter for various parsers. must implement newView() and render() methods, must deal with html and source properties
 // Abstract into various parsers for simple templates, markdown, etc
 JazzFusion.View = function() {
-  this.source = this.html = "";
+  this.source = "";
   this.hasRendered = false;
 };
 
@@ -206,7 +206,20 @@ JazzFusion.View.prototype = {
 
     this.hasRendered = true;
     JazzFusion.puts("Rendering");
-    this.html = JazzFusion.replaceAndClean(this.source, options);
-    $("#loadSpace").html(this.html);
+    var html = JazzFusion.replaceAndClean(this.source, options);
+    html = this.stripAndRunScripts(html);
+    document.getElementById(JazzFusion.viewId).innerHTML = html;
+  },
+  stripAndRunScripts: function(html) {
+    var scripts = html.match(/\<script.+\<\/script\>/g);
+    if(!scripts)
+      return html;
+    
+    JazzFusion.each(scripts, function(s) {
+      // remove open/close script tags
+      // insertBefore to head
+      // removeChild from head
+    });
+    return html;
   }
 };

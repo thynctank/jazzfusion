@@ -146,13 +146,67 @@ var JazzFusion = {
   }
 };
 
+JazzFusion.Hash = function(obj) {
+  this.data = obj || {};
+};
+
+JazzFusion.Hash.prototype = {
+  has: function(key) {
+    if(this.data.hasOwnProperty(key))
+      return true;
+    else
+      return false;
+  },
+  set: function(key, value) {
+    this.data[key] = value;
+  },
+  get: function(key) {
+    return this.data[key];
+  },
+  getLength: function() {
+    var length = 0;
+    for(var i in this.data) {
+       if(this.data.hasOwnProperty(i))
+        length++;
+    }
+    return length;
+  },
+  each: function(iterator, bind) {
+    JazzFusion.each(this.data, iterator, bind);
+  },
+  getValues: function() {
+    var keys = [];
+    this.each(function(val) {
+      keys.push(val);
+    });
+    return keys;
+  },
+  getKeys: function() {
+    var values = [];
+    this.each(function(val, key) {
+      values.push(key);
+    });
+    return values;
+  }
+};
+
+JazzFusion.controllers = new JazzFusion.Hash();
+
 // This is an adapter for various parsers. must implement newView() and render() methods, must deal with html and source properties
 // Abstract into various parsers for simple templates, markdown, etc
-JazzFusion.viewParser = {
-  newView: function() {
-    return {source: "", html: "", render: this.render};
-  },
-  render: function() {
+JazzFusion.View = function() {
+  this.source = this.html = "";
+  this.hasRendered = false;
+};
+
+JazzFusion.View.prototype = {
+  render: function(options) {
+    if(this.hasRendered === true)
+      return;
+
+    this.hasRendered = true;
     JazzFusion.puts("Rendering");
+    this.html = JazzFusion.replaceAndClean(this.source, options);
+    $("#loadSpace").html(this.html);
   }
 };

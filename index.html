@@ -10,12 +10,28 @@
       JazzFusion.debug = true;
     
       var testController = new JazzFusion.Controller({
-        beforeAll: function() {JazzFusion.puts("Do this before every action");}
+        name: "test",
+        actions: {
+          index: function(v, c, params) {
+            params = JazzFusion.merge({
+              one: "One",
+              two: "Two"
+            }, params);
+            
+            v.source = $.ajax({
+              async: false,
+              url: "partial.html"
+            }).responseText;
+            v.render(params);
+          }
+        }
       });
     </script>
   </head>
   <body>
-    
+    <div id="loadSpace">
+      
+    </div>
   </body>
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.js" type="text/javascript" charset="utf-8"></script>
 </html>

@@ -7,19 +7,25 @@
 // Controller constructor registers itself with the router so it can be called using redirects/actions can be rendered, used for hijaxing links/forms
 JazzFusion.Controller = function(options) {
   JazzFusion.setOptions.call(this, options, {
+    name: "",
     beforeAll: function() {},
     afterAll: function() {},
     actions: {
       index: function() {
-        JazzFusion.puts("Visited index");
       }
     }
   });
   
+  if(!this.options.name)
+    throw("A controller MUST have a name to be routable");
+  
+  // register with system
+  if(!JazzFusion.controllers.has(this.options.name))
+    JazzFusion.controllers.set(this.options.name, this);
   
   
   JazzFusion.each(this.options.actions, function(func, action) {
-    this.options[action] = new JazzFusion.Controller.Action(this, func);
+    this[action] = new JazzFusion.Controller.Action(this, func);
   }, this);
   
   this.beforeAll = this.options.beforeAll;
@@ -33,22 +39,29 @@ JazzFusion.Controller = function(options) {
 //   Within view code you can call helpers as this.helper_method_name() in embedded JS
 //   Need to build (fast!) JS parser to handle var assignment, params and multi-line JS blocks.
 //   First just allow substitution and simple parameterless function calls
-JazzFusion.Controller.Action = function(controller, runFunc) {
-  this.view = JazzFusion.viewParser.newView();
-  this.run = function() {
-    this.init();
-    controller.beforeAll();
-    runFunc();
-    controller.afterAll();
-  };
+JazzFusion.Controller.Action = function(controller, func) {
+  this.controller = controller;
+  this.func = func;
+  this.view = new JazzFusion.View();
 };
 
+// actions must take view, controller, and params objects as params
 JazzFusion.Controller.Action.prototype = {
-  init: function() {
-    
+  run: function(params) {
+    this.view.hasRendered = false;
+    this.controller.beforeAll();
+    this.func(this.view, this.controller, params);
+    this.view.render();
+    this.controller.afterAll();
   }
 };
 
 JazzFusion.Controller.prototype = {
-  
+  redirectTo: function(options) {
+    var routeOptions = JazzFusion.merge({
+      controller: this.options.name
+    }, options);
+    
+    JazzFusion.router.resolve(routeOptions);
+  }
 };

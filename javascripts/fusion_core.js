@@ -207,19 +207,22 @@ JazzFusion.View.prototype = {
     this.hasRendered = true;
     JazzFusion.puts("Rendering");
     var html = JazzFusion.replaceAndClean(this.source, options);
-    html = this.stripAndRunScripts(html);
-    document.getElementById(JazzFusion.viewId).innerHTML = html;
+    this.stripAndRunScripts(html);
   },
+  // mimic's something or other in jQuery
   stripAndRunScripts: function(html) {
-    var scripts = html.match(/\<script.+\<\/script\>/g);
-    if(!scripts)
-      return html;
+    var scriptsRx = /<script.+<\/script>/g;
+    var scripts = html.match(scriptsRx);
+    html = html.replace(scriptsRx, "");
+    document.getElementById(JazzFusion.viewId).innerHTML = html;
     
+    var scriptRemovalRx = /<\/?script(\s*\S*=\S*)*>/g;
     JazzFusion.each(scripts, function(s) {
       // remove open/close script tags
+      s = JazzFusion.replaceAndClean(s.replace(scriptRemovalRx, ""));
+      debugger;
       // insertBefore to head
       // removeChild from head
     });
-    return html;
   }
 };

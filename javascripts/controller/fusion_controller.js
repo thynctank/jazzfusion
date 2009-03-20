@@ -53,15 +53,15 @@ JazzFusion.Controller.Action.prototype = {
     this.func(this.view, this.controller, params);
     this.view.render();
     this.controller.afterAll();
-  }
-};
-
-JazzFusion.Controller.prototype = {
+  },
   redirectTo: function(options) {
     var routeOptions = JazzFusion.merge({
-      controller: this.options.name
+      controller: this.controller.options.name
     }, options);
     
     JazzFusion.router.resolve(routeOptions);
   }
+};
+
+JazzFusion.Controller.prototype = {
 };

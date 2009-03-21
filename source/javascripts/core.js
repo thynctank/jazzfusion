@@ -194,6 +194,7 @@ JazzFusion.controllers = new JazzFusion.Hash();
 
 JazzFusion.run = function() {
   this.loadControllers();
+  JazzFusion.View.hijack();
 };
 
 JazzFusion.loadScript = function(path) {

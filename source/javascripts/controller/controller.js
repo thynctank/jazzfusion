@@ -8,8 +8,8 @@
 JazzFusion.Controller = function(options) {
   JazzFusion.setOptions.call(this, options, {
     name: "",
-    beforeAll: function() {},
-    afterAll: function() {},
+    beforeFilters: {},
+    afterFilters: {},
     actions: {
       index: function() {
       }
@@ -28,38 +28,46 @@ JazzFusion.Controller = function(options) {
     this[action] = new JazzFusion.Controller.Action(this, func);
   }, this);
   
-  this.beforeAll = this.options.beforeAll;
-  this.afterAll = this.options.afterAll;
+  this.beforeFilters = this.options.beforeFilters;
+  this.afterFilters = this.options.afterFilters;
 };
 
 //   actions are built into Action objects and reassigned to same-named properties on Controller object. View objects are assigned.
 //   View objects are dependent on templating engine, maybe overrideable per call to render?
 //   Call render automatically, but calling explicitly allows addl params to be passed in
 //     (Pass params object automatically)
-//   Within view code you can call helpers as this.helper_method_name() in embedded JS
-//   Need to build (fast!) JS parser to handle var assignment, params and multi-line JS blocks.
-//   First just allow substitution and simple parameterless function calls
 JazzFusion.Controller.Action = function(controller, func) {
   this.controller = controller;
   this.func = func;
   this.view = new JazzFusion.View();
+  
+  // build custom before/after filter lists for this action
+  this.beforeFilters = function() {
+    
+  };
+  this.afterFilters = function() {
+    
+  };
 };
 
 // actions must take view, controller, and params objects as params
 JazzFusion.Controller.Action.prototype = {
   run: function(params) {
+    JazzFusion.currentController = this.controller;
+    JazzFusion.currentAction = this;
+
     this.view.hasRendered = false;
-    this.controller.beforeAll();
+    this.beforeFilters();
     this.func(this.view, this.controller, params);
     this.view.render();
-    this.controller.afterAll();
+    this.afterFilters();
   },
   redirectTo: function(options) {
     var routeOptions = JazzFusion.merge({
       controller: this.controller.options.name
     }, options);
     
-    JazzFusion.router.resolve(routeOptions);
+    JazzFusion.router.resolve(routeOptions).run();
   }
 };
 

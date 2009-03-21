@@ -1,19 +1,15 @@
 // This is an adapter for various parsers.
 // Abstract into various parsers for simple templates, markdown, etc
 JazzFusion.View = function() {
-  this.source = "";
   this.hasRendered = false;
 };
 
+//   Within template you can call helpers as JazzFusion.currentAction.helper_method_name() in embedded JS
+//   First just allow substitution and simple parameterless function calls
+
 JazzFusion.View.prototype = {
-  fetch: function() {
-    this.source = $.ajax({
-      async: false,
-      url: "partial.html"
-    }).responseText;
-  },
   render: function(options) {
-    this.fetch();
+    this.source = JazzFusion.Router.fetchTemplate();
     if(this.hasRendered === true)
       return;
 
@@ -42,5 +38,11 @@ JazzFusion.View.prototype = {
       head.removeChild(script);
     });
     document.getElementById(JazzFusion.viewId).innerHTML = html;
+    JazzFusion.View.hijack();
   }
+};
+
+JazzFusion.View.hijack = function() {
+  // hijack links - ignore those designated remote
+  // hijack forms - ignore those designated remote
 };

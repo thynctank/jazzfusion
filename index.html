@@ -3,31 +3,17 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
     <title>JazzFusion</title>
-    <script src="javascripts/fusion_core.js" type="text/javascript" charset="utf-8"></script>
-    <script src="javascripts/router/fusion_router.js" type="text/javascript" charset="utf-8"></script>
-    <script src="javascripts/controller/fusion_controller.js" type="text/javascript" charset="utf-8"></script>
+    <script src="source/javascripts/core.js" type="text/javascript" charset="utf-8"></script>
+    <script src="source/javascripts/router/router.js" type="text/javascript" charset="utf-8"></script>
+    <script src="source/javascripts/controller/controller.js" type="text/javascript" charset="utf-8"></script>
+    <script src="source/javascripts/view/view.js" type="text/javascript" charset="utf-8"></script>
     <script type="text/javascript" charset="utf-8">
       JazzFusion.debug = true;
       JazzFusion.viewId = "loadSpace";
-    
-      var testController = new JazzFusion.Controller({
-        name: "test",
-        actions: {
-          index: function(v, c, params) {
-            params = JazzFusion.merge({
-              one: "One",
-              two: "Two"
-            }, params);
-            
-            v.source = $.ajax({
-              async: false,
-              url: "partial.html"
-            }).responseText;
-            v.render(params);
-          }
-        }
-      });
+      JazzFusion.controllerList = ["test"];
+      JazzFusion.run();
     </script>
+    <!-- Loading should happen automatically at run() -->
   </head>
   <body>
     <div id="loadSpace">

@@ -1,0 +1,12 @@
+   - Action
+      - render
+      - redirectTo
+   - View
+      - passing controller/action context to view code itself (not just parser): assign JazzFusion.currentController reference
+      - instructions for users on how to define new view parsers
+   - Router
+      - needs to handle retrieving controllers (if not already loaded), views
+   - Config
+      - figure exactly what needs to be listed (probably just a list of controllers, but maybe also config for dir structure - custom viewParsers especially)
+   - Launch
+      - need a JazzFusion.run() method - loads all controllers from list

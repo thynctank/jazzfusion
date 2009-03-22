@@ -1,6 +1,8 @@
 // Abstract this out as well to handle various styles of routing actions/generating paths
 JazzFusion.Router = {
   resolve: function(options) {
+    if(JazzFusion.getType(options) === "string")
+      return this.resolvePath(options);
     var routeOptions = JazzFusion.merge({
       controller: "",
       action: "index",

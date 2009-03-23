@@ -9,7 +9,6 @@ JazzFusion.View = function() {
 
 JazzFusion.View.prototype = {
   render: function(options) {
-    this.source = JazzFusion.Router.fetchTemplate();
     if(this.hasRendered === true)
       return;
 
@@ -39,10 +38,29 @@ JazzFusion.View.prototype = {
     });
     document.getElementById(JazzFusion.viewId).innerHTML = html;
     JazzFusion.View.hijack();
+  },
+  fetchTemplate: function(controller, action) {
+    var file = JazzFusion.baseHref + "app/views/" + controller.toLowerCase() + "/" + action.toLowerCase() + ".html";
+    JazzFusion.controllers.get(controller)[action].view.source = $.ajax({
+      async: false,
+      url: file
+    }).responseText;
   }
 };
 
 JazzFusion.View.hijack = function() {
   // hijack links - ignore those designated remote
+  var links = document.getElementsByTagName("a");
+  for(var i = 0, l = links.length; i < l; i++) {
+    var link = links[i];
+    if(link.hasAttribute("href")) {
+      link.onclick = function(evt) {
+        if(evt && evt.preventDefault)
+          evt.preventDefault();
+        JazzFusion.Router.resolve(link.href).render();
+        return false;
+      };
+    }
+  }
   // hijack forms - ignore those designated remote
 };

@@ -6,18 +6,22 @@
     <script src="source/javascripts/core.js" type="text/javascript" charset="utf-8"></script>
     <script src="source/javascripts/router/router.js" type="text/javascript" charset="utf-8"></script>
     <script src="source/javascripts/controller/controller.js" type="text/javascript" charset="utf-8"></script>
+    <script src="source/javascripts/controller/action.js" type="text/javascript" charset="utf-8"></script>
     <script src="source/javascripts/view/view.js" type="text/javascript" charset="utf-8"></script>
     <script type="text/javascript" charset="utf-8">
       JazzFusion.debug = true;
       JazzFusion.viewId = "loadSpace";
+      JazzFusion.baseHref = "http://localhost:8888/JazzFusion/";
       JazzFusion.controllerList = ["test_one", "test_two"];
-      JazzFusion.run();
+      window.onload = function() {
+        JazzFusion.run();
+      };
     </script>
     <!-- Loading should happen automatically at run() -->
   </head>
   <body>
     <div id="loadSpace">
-      <a href="test/index">Load test index</a>
+      <a href="test_one/index">Load test index</a>
     </div>
   </body>
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.js" type="text/javascript" charset="utf-8"></script>

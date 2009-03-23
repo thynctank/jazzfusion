@@ -15,18 +15,21 @@ JazzFusion.Router = {
     if(!controller)
       throw("Controller not found");
     else {
-      if(!(controller[routeOptions.action] && controller[routeOptions.action].run && JazzFusion.getType(controller[routeOptions.action].run) === "function"))
+      if(!controller[routeOptions.action])
         throw("Action not found");
-      else
-        return controller[routeOptions.action];
+      else {
+        var action = controller[routeOptions.action];
+        action.source = action.view.fetchTemplate(routeOptions.controller, routeOptions.action);
+        return action;
+      }
     }
   },
   resolvePath: function(path) {
     // break up path string into components, lookup in controllers hash and call appropriate action, passing in any params
     // example path: test/index?key=val&key2=val2
     // resolves to: testController.options.actions.index({key: val, key2: val2});
-    var components = path.split(/\/|\?/);
-    this.resolve({
+    var components = path.split(JazzFusion.baseHref)[1].split("/");
+    return this.resolve({
       controller: components[0] || "",
       action: components[1] || "",
       params: components[2] || ""
@@ -36,11 +39,5 @@ JazzFusion.Router = {
     // build path string from components
     // example params: testController, "index", {key: val, key2: val2}
     // generates: test/index?key=val&key2=val2
-  },
-  fetchTemplate: function(controller, action) {
-    return $.ajax({
-      async: false,
-      url: "app/controllers/" + controller.toLowerCase() + "/" + action.toLowerCase() + ".html"
-    }).responseText;
   }
 };

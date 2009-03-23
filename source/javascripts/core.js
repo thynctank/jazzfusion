@@ -1,7 +1,7 @@
 var JazzFusion = {
   each: function(collection, iterator, bind) {
     switch(this.getType(collection)) {
-      case "array": 
+      case "array":
         for(var i = 0, l = collection.length; i < l; i++)
           iterator.call(bind, collection[i], i);
         break;

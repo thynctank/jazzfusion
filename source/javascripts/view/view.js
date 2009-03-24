@@ -1,10 +1,7 @@
 // This is an adapter for various parsers.
 // Abstract into various parsers for simple templates, markdown, etc
 JazzFusion.View = function(controller, action) {
-  this.source = $.ajax({
-    url: JazzFusion.baseHref + "app/views/" + controller + "/" + action + ".html",
-    async: false
-  }).responseText;
+  this.source = JazzFusion.load(JazzFusion.baseHref + "app/views/" + controller + "/" + action + ".html");
 };
 
 //   Within template you can call helpers as JazzFusion.currentAction.helper_method_name() in embedded JS
@@ -56,4 +53,4 @@ JazzFusion.View.hijack = function() {
   // hijack forms - ignore those designated remote
 };
 
-// define default helpers to be used in view via JazzFusion.currentAction.helpers
+// define default helpers to be used in view via JazzFusion.currentAction

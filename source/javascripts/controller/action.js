@@ -6,7 +6,7 @@ JazzFusion.Controller.Action = function(name, controller, func) {
   this.name = name;
   this.controller = controller;
   this.func = func;
-  this.view = new JazzFusion.View(this.controller.options.name, this.name);
+  this.view = new JazzFusion.View(controller.options.name, name);
   
   // build custom before/after filter lists for this action
   this.beforeFilters = function() {

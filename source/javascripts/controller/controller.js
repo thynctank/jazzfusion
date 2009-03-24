@@ -27,6 +27,8 @@ JazzFusion.Controller = function(options) {
   
   this.beforeFilters = this.options.beforeFilters;
   this.afterFilters = this.options.afterFilters;
+  // load up any helpers
+  JazzFusion.loadScript(JazzFusion.baseHref + "app/helpers/" + this.options.name + ".js");
 };
 
 JazzFusion.Controller.prototype = {

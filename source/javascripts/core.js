@@ -190,6 +190,28 @@ JazzFusion.Hash.prototype = {
   }
 };
 
+
+
+
+if( typeof XMLHttpRequest === "undefined" ) {
+  JazzFusion.xhr = function() {
+    try { return ActiveXObject("Msxml2.XMLHTTP.6.0"); } catch(e) {}
+    try { return ActiveXObject("Msxml2.XMLHTTP.3.0"); } catch(e) {}
+    try { return ActiveXObject("Msxml2.XMLHTTP"); } catch(e) {}
+    try { return ActiveXObject("Microsoft.XMLHTTP"); } catch(e) {}
+    throw new Error( "This browser does not support XMLHttpRequest." );
+  };
+}
+else
+  JazzFusion.xhr = XMLHttpRequest;
+
+JazzFusion.load = function(url) {
+  var xhr = new JazzFusion.xhr();
+  xhr.open("GET", url, false);
+  xhr.send(null);
+  return xhr.responseText;
+};
+
 JazzFusion.controllers = new JazzFusion.Hash();
 JazzFusion.defaultRoute = {controller: "main"};
 

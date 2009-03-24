@@ -1,43 +1,39 @@
 // Abstract this out as well to handle various styles of routing actions/generating paths
 JazzFusion.Router = {
-  resolve: function(options) {
-    if(JazzFusion.getType(options) === "string")
-      return this.resolvePath(options);
-    var routeOptions = JazzFusion.merge({
-      controller: "",
-      action: "index",
-      params: {}
-    }, options);
-    if(!routeOptions.controller)
-      throw("A route MUST include a controller at a minimum");
+  resolve: function(params) {
+    if(JazzFusion.getType(params) === "string")
+      return this.resolvePath(params);
+    params = JazzFusion.merge({
+      controller: "main",
+      action: "index"
+    }, params);
     
-    var controller = JazzFusion.controllers.get(routeOptions.controller);
-    if(!controller)
-      throw("Controller not found");
-    else {
-      if(!controller[routeOptions.action])
-        throw("Action not found");
-      else {
-        var action = controller[routeOptions.action];
-        action.source = action.view.fetchTemplate(routeOptions.controller, routeOptions.action);
-        return action;
-      }
-    }
+    JazzFusion.params = params;
+    
+    if(JazzFusion.controllers.get(params.controller))
+      if(JazzFusion.controllers.get(params.controller)[params.action])
+        return JazzFusion.controllers.get(params.controller)[params.action];
+    return false;
   },
   resolvePath: function(path) {
-    // break up path string into components, lookup in controllers hash and call appropriate action, passing in any params
-    // example path: test/index?key=val&key2=val2
-    // resolves to: testController.options.actions.index({key: val, key2: val2});
-    var components = path.split(JazzFusion.baseHref)[1].split("/");
-    return this.resolve({
-      controller: components[0] || "",
-      action: components[1] || "",
-      params: components[2] || ""
-    });
+    path = path.replace(JazzFusion.baseHref, '');
+    var fragments = path.replace(/(\/|\?)/g, "##").split("##");
+    var params = {
+      controller: fragments[0],
+      action: fragments[1] || "index"
+    };
+    if(fragments[2])
+      JazzFusion.each(fragments[2].split("&"), function(frag) {
+        var nameAndVal = frag.split("=");
+        params[nameAndVal[0]] = nameAndVal[1];
+      });
+    
+    return this.resolve(params);
   },
-  generatePath: function(controller, action, params) {
-    // build path string from components
-    // example params: testController, "index", {key: val, key2: val2}
-    // generates: test/index?key=val&key2=val2
+  run: function(params) {
+    var action = this.resolve(params);
+    if(action) {
+      action.run();
+    }
   }
 };

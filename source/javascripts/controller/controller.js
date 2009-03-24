@@ -10,10 +10,7 @@ JazzFusion.Controller = function(options) {
     name: "",
     beforeFilters: {},
     afterFilters: {},
-    actions: {
-      index: function() {
-      }
-    }
+    actions: {}
   });
   
   if(!this.options.name)
@@ -25,7 +22,7 @@ JazzFusion.Controller = function(options) {
   
   
   JazzFusion.each(this.options.actions, function(func, action) {
-    this[action] = new JazzFusion.Controller.Action(this, func);
+    this[action] = new JazzFusion.Controller.Action(action, this, func);
   }, this);
   
   this.beforeFilters = this.options.beforeFilters;

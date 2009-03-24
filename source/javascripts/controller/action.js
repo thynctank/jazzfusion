@@ -2,10 +2,11 @@
 //  View objects are dependent on templating engine, maybe overrideable per call to render?
 //  Call render automatically, but calling explicitly allows addl params to be passed in
 //    (Pass params object automatically)
-JazzFusion.Controller.Action = function(controller, func) {
+JazzFusion.Controller.Action = function(name, controller, func) {
+  this.name = name;
   this.controller = controller;
   this.func = func;
-  this.view = new JazzFusion.View();
+  this.view = new JazzFusion.View(this.controller.options.name, this.name);
   
   // build custom before/after filter lists for this action
   this.beforeFilters = function() {
@@ -21,11 +22,11 @@ JazzFusion.Controller.Action.prototype = {
   run: function(params) {
     JazzFusion.currentController = this.controller;
     JazzFusion.currentAction = this;
-
+    
     this.view.hasRendered = false;
     this.beforeFilters();
-    this.func(this.view, this.controller, params);
-    this.view.render();
+    this.func(this.view, this.controller);
+    this.view.render(params);
     this.afterFilters();
   },
   redirectTo: function(options) {

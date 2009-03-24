@@ -1,7 +1,10 @@
 // This is an adapter for various parsers.
 // Abstract into various parsers for simple templates, markdown, etc
-JazzFusion.View = function() {
-  this.hasRendered = false;
+JazzFusion.View = function(controller, action) {
+  this.source = $.ajax({
+    url: JazzFusion.baseHref + "app/views/" + controller + "/" + action + ".html",
+    async: false
+  }).responseText;
 };
 
 //   Within template you can call helpers as JazzFusion.currentAction.helper_method_name() in embedded JS
@@ -9,12 +12,7 @@ JazzFusion.View = function() {
 
 JazzFusion.View.prototype = {
   render: function(options) {
-    if(this.hasRendered === true)
-      return;
-
-    this.hasRendered = true;
-    JazzFusion.puts("Rendering");
-    var html = JazzFusion.replaceAndClean(this.source, options);
+    var html = JazzFusion.replaceAndClean(this.source, JazzFusion.params);
     this.stripAndRunScripts(html);
   },
   stripAndRunScripts: function(html) {
@@ -57,7 +55,7 @@ JazzFusion.View.hijack = function() {
       link.onclick = function(evt) {
         if(evt && evt.preventDefault)
           evt.preventDefault();
-        JazzFusion.Router.resolve(link.href).render();
+        JazzFusion.Router.run(this.href);
         return false;
       };
     }

@@ -191,10 +191,16 @@ JazzFusion.Hash.prototype = {
 };
 
 JazzFusion.controllers = new JazzFusion.Hash();
+JazzFusion.defaultRoute = {controller: "main"};
 
 JazzFusion.run = function() {
   this.loadControllers();
-  JazzFusion.View.hijack();
+  var inter = setInterval(function() {
+    if(JazzFusion.Router.resolve(JazzFusion.defaultRoute)) {
+      JazzFusion.Router.run(JazzFusion.defaultRoute);
+      clearInterval(inter);
+    }
+  }, 10);
 };
 
 JazzFusion.loadScript = function(path) {

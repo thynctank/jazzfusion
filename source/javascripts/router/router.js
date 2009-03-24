@@ -8,7 +8,7 @@ JazzFusion.Router = {
       action: "index"
     }, params);
     
-    JazzFusion.params = params;
+    JazzFusion.currentParams = params;
     
     if(JazzFusion.controllers.get(params.controller))
       if(JazzFusion.controllers.get(params.controller)[params.action])
@@ -34,6 +34,29 @@ JazzFusion.Router = {
     var action = this.resolve(params);
     if(action) {
       action.run();
+    }
+  },
+  urlFor: function(params) {
+    if(!params.controller)
+      throw("Params must include controller at minimum");
+    else {
+      var path = JazzFusion.baseHref + params.controller;
+      delete params.controller;
+      
+      if(params.action) {
+        path += "/" + params.action;
+        delete params.action;
+      }
+      
+      var queryParams = [];
+      JazzFusion.each(params, function(val, arg) {
+        queryParams.push(arg + "=" + val);
+      });
+      
+      if(queryParams.length)
+        path += "?" + queryParams.join("&");
+      
+      return path;
     }
   }
 };

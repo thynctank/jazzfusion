@@ -12,7 +12,7 @@ JazzFusion.View = function(controller, action) {
 
 JazzFusion.View.prototype = {
   render: function(options) {
-    var html = JazzFusion.replaceAndClean(this.source, JazzFusion.params);
+    var html = JazzFusion.replaceAndClean(this.source, JazzFusion.currentParams);
     this.stripAndRunScripts(html);
   },
   stripAndRunScripts: function(html) {
@@ -36,13 +36,6 @@ JazzFusion.View.prototype = {
     });
     document.getElementById(JazzFusion.viewId).innerHTML = html;
     JazzFusion.View.hijack();
-  },
-  fetchTemplate: function(controller, action) {
-    var file = JazzFusion.baseHref + "app/views/" + controller.toLowerCase() + "/" + action.toLowerCase() + ".html";
-    JazzFusion.controllers.get(controller)[action].view.source = $.ajax({
-      async: false,
-      url: file
-    }).responseText;
   }
 };
 
@@ -62,3 +55,5 @@ JazzFusion.View.hijack = function() {
   }
   // hijack forms - ignore those designated remote
 };
+
+// define default helpers to be used in view via JazzFusion.currentAction.helpers

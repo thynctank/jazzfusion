@@ -5,9 +5,10 @@
     <title>JazzFusion</title>
     <script src="source/javascripts/core.js" type="text/javascript" charset="utf-8"></script>
     <script src="source/javascripts/router/router.js" type="text/javascript" charset="utf-8"></script>
-    <script src="source/javascripts/controller/controller.js" type="text/javascript" charset="utf-8"></script>
+    <script src="source/javascripts/controller/base_controller.js" type="text/javascript" charset="utf-8"></script>
     <script src="source/javascripts/controller/action.js" type="text/javascript" charset="utf-8"></script>
     <script src="source/javascripts/view/view.js" type="text/javascript" charset="utf-8"></script>
+    <script src="source/javascripts/controller/controller.js" type="text/javascript" charset="utf-8"></script>
 
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.js" type="text/javascript" charset="utf-8"></script>
 
@@ -16,7 +17,7 @@
       JazzFusion.viewId = "loadSpace";
       JazzFusion.baseHref = "http://localhost:8888/JazzFusion/";
       JazzFusion.controllerList = ["main", "test_one", "test_two"];
-
+      
       $(function() {
         JazzFusion.run();
       });

@@ -1,13 +1,16 @@
 // This is an adapter for various parsers.
 // Abstract into various parsers for simple templates, markdown, etc
 JazzFusion.View = function(controller, action) {
-  this.source = JazzFusion.load(JazzFusion.baseHref + "app/views/" + controller + "/" + action + ".html");
+  this.source = this.loadSource(controller, action);
 };
 
 //   Within template you can call helpers as JazzFusion.currentAction.helper_method_name() in embedded JS
 //   First just allow substitution and simple parameterless function calls
 
 JazzFusion.View.prototype = {
+  loadSource: function(controller, action) {
+    return JazzFusion.load(JazzFusion.baseHref + "app/views/" + controller + "/" + action + ".html");
+  },
   render: function(options) {
     var html = JazzFusion.replaceAndClean(this.source, JazzFusion.currentParams);
     this.stripAndRunScripts(html);

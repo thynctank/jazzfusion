@@ -1,16 +1,9 @@
-// Various options passed to Controller:
-//   beforeAll/afterAll: filters run before and after all actions
-//   actions: each of these generates a new Controller.Action object with various methods including init and run, 
-//            which is the function the user passes in. run is assigned a this object referencing the parent controller
-//   properties: controller/helper methods and properties belonging to the controller which can be called on from any of its actions
-
-// Controller constructor registers itself with the router so it can be called using redirects/actions can be rendered, used for hijaxing links/forms
 JazzFusion.Controller = function(options) {
   JazzFusion.setOptions.call(this, options, {
     name: "",
-    beforeFilters: {},
-    afterFilters: {},
-    actions: {}
+    actions: {},
+    beforeFilter: function(){},
+    afterFilter: function(){}
   });
   
   if(!this.options.name)
@@ -20,13 +13,13 @@ JazzFusion.Controller = function(options) {
   if(!JazzFusion.controllers.has(this.options.name))
     JazzFusion.controllers.set(this.options.name, this);
   
+  this.beforeFilter = this.options.beforeFilter;
+  this.afterFilter = this.options.afterFilter;
   
   JazzFusion.each(this.options.actions, function(func, action) {
     this[action] = new JazzFusion.Controller.Action(action, this, func);
   }, this);
   
-  this.beforeFilters = this.options.beforeFilters;
-  this.afterFilters = this.options.afterFilters;
   // load up any helpers
   JazzFusion.loadScript(JazzFusion.baseHref + "app/helpers/" + this.options.name + ".js");
 };

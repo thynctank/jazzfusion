@@ -7,14 +7,6 @@ JazzFusion.Controller.Action = function(name, controller, func) {
   this.controller = controller;
   this.func = func;
   this.view = new JazzFusion.View(controller.options.name, name);
-  
-  // build custom before/after filter lists for this action
-  this.beforeFilters = function() {
-    
-  };
-  this.afterFilters = function() {
-    
-  };
 };
 
 // actions must take view, controller, and params objects as params
@@ -22,12 +14,14 @@ JazzFusion.Controller.Action.prototype = {
   run: function(params) {
     JazzFusion.currentController = this.controller;
     JazzFusion.currentAction = this;
+    if(params)
+      JazzFusion.currentParams = params;
     
     this.view.hasRendered = false;
-    this.beforeFilters();
+    this.controller.beforeFilter();
     this.func(this.view, this.controller);
-    this.view.render(params);
-    this.afterFilters();
+    this.view.render(JazzFusion.currentParams);
+    this.controller.afterFilter();
   },
   redirectTo: function(options) {
     var routeOptions = JazzFusion.merge({
